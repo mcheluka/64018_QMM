@@ -1,0 +1,166 @@
+---
+title: "Assignment_4"
+author: "Manasa Chelukala"
+date: '2022-10-22'
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r}
+# 'Benchmarking' package is required for running the DEA functions.
+#require(Benchmarking)
+#install.packages("Benchmarking")
+library(Benchmarking)
+```
+
+Loading the Data
+```{r}
+# Create matrix for the two inputs
+X <- matrix(c(150, 400, 320, 520, 350, 320, 0.2, 0.7, 1.2, 2.0, 1.2, 0.7), ncol = 2)
+# Create matrix for the two outputs
+Y <- matrix(c(14000, 14000, 42000, 28000, 19000, 14000, 3500, 21000, 10500, 42000, 25000, 15000), ncol = 2)
+# Name the columns of the inputs and outputs
+colnames(X) <- c("Staff Hours per Day","Supplies per Day")
+colnames(Y) <- c("Reimburse Patient-Days", "Privately Paid Patient-Days")
+# Returning  the matrices 
+print(X)
+print(Y)
+```
+***1. Formulate and perform DEA analysis under all DEA assumptions of FDH, CRS, VRS, IRS, DRS, and FRH.***
+***2. Determine the Peers and Lambdas under each of the above assumptions***
+
+The below code will return the results of DEA using FDH method.
+```{r}
+# DEA code utilizing the FDH method
+FDH <- rep("FDH", times = 6)
+Not_Applicable <- rep(NA, times = 6)
+DEA_FDH <- dea(X, Y, RTS = "FDH")
+DEA_FDH_Peers <- peers(DEA_FDH)                             
+DEA_FDH_Lambda <- lambda(DEA_FDH)  
+print(DEA_FDH)
+print(DEA_FDH_Peers)
+print(DEA_FDH_Lambda)
+dea.plot.isoquant(X, Y, RTS= "FDH")
+# Summarize the results for addition to a summary table
+DEA_FDH_Peers <- cbind(DEA_FDH_Peers, Not_Applicable, Not_Applicable)
+FDH_Summary <- cbind(FDH, DEA_FDH$eff, DEA_FDH_Peers, DEA_FDH_Lambda)
+colnames(FDH_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+print(FDH_Summary)
+```
+
+The below code will return the results of DEA using CRS method.
+```{r}
+# DEA code utilizing the CRS method
+CRS <- rep("CRS", times = 6)
+DEA_CRS <- dea(X, Y, RTS = "CRS")
+DEA_CRS_Peers <- peers(DEA_CRS)                             
+DEA_CRS_Lambda <- lambda(DEA_CRS)                            
+print(DEA_CRS)
+print(DEA_CRS_Peers)
+print(DEA_CRS_Lambda)
+dea.plot.isoquant(X, Y, RTS= "CRS")
+# Summarize the results for addition to a summary table
+DEA_CRS_Lambda <- cbind(DEA_CRS_Lambda, Not_Applicable, Not_Applicable)
+CRS_Summary <- cbind(CRS, DEA_CRS$eff, DEA_CRS_Peers, DEA_CRS_Lambda)
+colnames(CRS_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+CRS_Summary <- as.data.frame(CRS_Summary)
+CRS_Summary
+```
+The below code will return the results of DEA using VRS method.
+```{r}
+# DEA code utilizing the VRS method
+VRS <- rep("VRS", times = 6)
+DEA_VRS <- dea(X, Y, RTS = "VRS")
+DEA_VRS_Peers <- peers(DEA_VRS)                             
+DEA_VRS_Lambda <- lambda(DEA_VRS)                            
+print(DEA_VRS)
+print(DEA_VRS_Peers)
+print(DEA_VRS_Lambda)
+dea.plot.isoquant(X, Y, RTS= "VRS")
+# Summarize the results for addition to a summary table
+DEA_VRS_Lambda <- cbind(DEA_VRS_Lambda, Not_Applicable)
+VRS_Summary <- cbind(VRS, DEA_VRS$eff, DEA_VRS_Peers, DEA_VRS_Lambda)
+colnames(VRS_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+VRS_Summary <- as.data.frame(VRS_Summary)
+VRS_Summary
+```
+
+The below code will return the results of DEA using IRS method.
+```{r}
+# DEA code utilizing the IRS method
+IRS <- rep("IRS", times = 6)
+DEA_IRS <- dea(X, Y, RTS = "IRS")
+DEA_IRS_Peers <- peers(DEA_IRS)                             
+DEA_IRS_Lambda <- lambda(DEA_IRS)                            
+print(DEA_IRS)
+print(DEA_IRS_Peers)
+print(DEA_IRS_Lambda)
+dea.plot.isoquant(X, Y, RTS= "IRS")
+# Summarize the results for addition to a summary table
+DEA_IRS_Lambda <- cbind(DEA_IRS_Lambda, Not_Applicable)
+IRS_Summary <- cbind(IRS, DEA_IRS$eff, DEA_IRS_Peers, DEA_IRS_Lambda)
+colnames(IRS_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+IRS_Summary <- as.data.frame(IRS_Summary)
+IRS_Summary
+```
+
+The below code will return the results of DEA using DRS method.
+```{r}
+# DEA code utilizing the DRS method
+DRS <- rep("DRS", times = 6)
+DEA_DRS <- dea(X, Y, RTS = "DRS")
+DEA_DRS_Peers <- peers(DEA_DRS)                             
+DEA_DRS_Lambda <- lambda(DEA_DRS)                            
+print(DEA_DRS)
+print(DEA_DRS_Peers)
+print(DEA_DRS_Lambda)
+dea.plot.isoquant(X, Y, RTS= "DRS")
+# Summarize the results for addition to a summary table
+DEA_DRS_Lambda <- cbind(DEA_DRS_Lambda, Not_Applicable, Not_Applicable)
+DRS_Summary <- cbind(DRS, DEA_DRS$eff, DEA_DRS_Peers, DEA_DRS_Lambda)
+colnames(DRS_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+DRS_Summary <- as.data.frame(DRS_Summary)
+DRS_Summary
+```
+
+The below code will return the results of DEA using FRH/ADD method.
+```{r}
+# DEA code utilizing the ADD method
+ADD <- rep("ADD", times = 6)
+DEA_ADD <- dea(X, Y, RTS = "ADD")
+DEA_ADD_Peers <- peers(DEA_ADD)                             
+DEA_ADD_Lambda <- lambda(DEA_ADD)                            
+print(DEA_ADD)
+print(DEA_ADD_Peers)
+print(DEA_ADD_Lambda)
+# Summarize the results for addition to a summary table
+DEA_ADD_Peers <- cbind(DEA_ADD_Peers, Not_Applicable, Not_Applicable)
+ADD_Summary <- cbind(ADD, DEA_ADD$eff, DEA_ADD_Peers, DEA_ADD_Lambda)
+colnames(ADD_Summary) <- c("Method","Eff", "P1", "P2", "P3", "L1", "L2", "L3", "L4", "L5", "L6")
+ADD_Summary <- as.data.frame(ADD_Summary)
+ADD_Summary
+```
+***3. Summarize your results in a tabular format***
+```{r}
+# Combine all of the method summary tables into one large summary table for each method
+Summary_Table <- rbind(FDH_Summary, CRS_Summary, VRS_Summary, IRS_Summary, DRS_Summary, ADD_Summary)
+# Return the summary table for review
+print(Summary_Table)
+```
+***4. Compare and contrast the above results***
+
+As shown in the summary table, all six DMU's return FRH and FDH efficiency values of 1.0, along with identical peer and lambda values.
+
+In the CRS method, DMU[1:4] is efficient at 1.0.
+
+In the VRS method  DMU[1:5] is efficient at 1.0.
+
+In the IRS method  DMU[1:5] is efficient at 1.0, and
+
+In the DRS method  DMU[1:4] is efficient at 1.0.
+
+All of these less efficient DMU's had a Peer[1] and Peer [2] value of 1 and 2, respectively; 
+
+Depending on the method,However, the Peer[3] value was either 4 or 5. 
+
+Furthermore, all methods were relatively close in terms of relative weights (lambdas).
