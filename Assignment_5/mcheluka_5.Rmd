@@ -1,0 +1,107 @@
+---
+title: "Assignment_5"
+author: "Manasa Chelukala"
+date: '2022-11-03'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+***Research and Development Division of Emax Corporation***
+
+Based on the problem statement, the goal is to:
+
+Maximize Z = P - 6*C - 3*D
+
+  P = total (discounted) profit over the life of the new products,
+  
+  C = change (in either direction) in the current level of employment,
+  
+  D = decrease (if any) in next year’s earnings from the current year’s level.
+
+Subject to:
+
+Total Profit: Maximize P = 20*X1 + 15*X2 + 25*X3
+
+Employment Level: 6*X1 + 4*X2 + 5*X3 = 50
+
+Earnings Next Year: 8*X1 + 7*X2 + 5*X3 >= 75
+
+As a result, the auxilary variables become:
+
+Y1 = 6*X1 + 4*X2 + 5*X3 - 50
+
+Y2 = 8*X1 + 7*X2 + 5*X3 - 75
+
+Which becomes:
+
+(Y1P - Y1M) = 6*X1 + 4*X2 + 5*X3 - 50
+
+(Y2P - Y2M) = 8*X1 + 7*X2 + 5*X3 - 75
+
+Therefore, the final setup of the problem statement is:
+
+Maximize Z = 20*X1 + 15*X2 + 25*X3 - 6*Y1P - 6*Y1M - 3*Y2M
+
+Subject to:
+
+6*X1 + 4*X2 + 5*X3 - (Y1P - Y1M) = 50
+
+8*X1 + 7*X2 + 5*X3 - (Y2P - Y2M) = 75
+
+And:
+
+Y1p represents Y1+
+
+Y1M represents Y1-
+
+Y2p represents Y2+
+
+Y2M represents Y2-
+
+X1, X2, X3 >= 0
+
+Y1P, Y1M, Y2P, Y2M >= 0
+
+Furthermore, we will run this problem in R as an linear programming model and discuss the results.
+
+```{r}
+# This problem will require the "lpSolveAPI" library
+library(lpSolveAPI)
+```
+
+```{r}
+# Import the .lp file for this problem
+lp <- read.lp("emax.lp")
+# Return the linear programming model
+lp
+```
+
+```{r}
+# Solve the linear programming model
+solve(lp)
+get.objective(lp)
+get.variables(lp)
+```
+
+Here,Based on the output of the linear programming model, we can conclude that.
+
+X1 = 0
+
+X2 = 0
+
+X3 = 15
+
+Y1P = 25
+
+Y1M = 0
+
+Y2M = 0
+
+Y2P = 0
+
+As a result, the product mix should only contain product 3.
+
+This mix would result in an object value of 225 units.
+
+Earnings goal for next year has been met fully,however, employment level goal will be exceeded by 25 units, causing 2,500 employees to be penalized and 150 units to be deducted.
