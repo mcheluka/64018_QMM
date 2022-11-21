@@ -1,0 +1,97 @@
+---
+title: "Assignment_6"
+author: "Manasa Chelukala"
+date: "11/18/2022"
+output: pdf_document
+---
+
+AP is a shipping service that guarantees overnight delivery of packages in the continental US. The company has various hubs at major cities and airports across the country. Packages are received at hubs, and then shipped to intermediate hubs or to their final destination. The manager of the AP hub in Cleveland is concerned about labor costs, and is interested in determining the most effective way to schedule workers. The hub operates seven days a week, and the number of packages it handles varies from one day to another.The manager wants to keep the total wage expenses as low as possible while ensuring that there are sufficient number of workers available each day. Formulate and solve the problem. What was the total cost? How many workers are available each day? 
+
+```{r}
+#Loading libraries
+library(lpSolveAPI)
+```
+
+```{r}
+#Reading the .lp file
+Ap <- read.lp("ap_hub.lp")
+print(Ap)
+```
+
+```{r}
+#Creating a table 
+
+WORKERS <- matrix(c("Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",18,27,22,26,25,21,19), ncol = 2, byrow = F)
+
+colnames(WORKERS) <- c("Day", "Workers")
+
+as.table(WORKERS)
+```
+Package handlers at AP are guaranteed a five-day work week with two consecutive days off. The base wage for the handlers is $750 per week. Workers working on Saturday or Sunday receive an additional $25 per day. 
+
+```{r}
+Days_Off_And_Wages <- matrix(c(1,2,3,4,5,6,7,
+                               "Sunday and Monday","Monday and Tuesday", "Tuesday and Wednesday", "Wednesday and Thursday", "Thursday and Friday", "Friday and Saturday", "Saturday and Sunday","$775", "$800","$800", "$800", "$800", "$775", "$750"), ncol = 3, byrow = F)
+
+colnames(Days_Off_And_Wages) <- c("Shift", "Days_off", "Wage")
+
+as.table(Days_Off_And_Wages)
+                               
+```
+
+```{r}
+#Running the model
+
+solve(Ap)
+
+```
+
+```{r}
+#Objective function (Total cost)
+
+get.objective(Ap)
+```
+As a result of maintaining a low total wage expense and ensuring that sufficient workers are available each day, the total cost to the firm is $25,675.
+
+
+```{r}
+#Variables (No of workers available each day)
+
+get.variables(Ap)
+```
+
+***Observations:***
+
+No.of workers in shift-1 = 2
+
+No.of workers in shift-2 = 4
+
+No.of workers in shift-3 = 5
+
+No.of workers in shift-4 = 0
+
+No.of workers in shift-5 = 8
+
+No.of workers in shift-6 = 1
+
+No.of workers in shift-7 = 13
+
+
+
+
+The Number of Workers available to work each day in terms of the objective function and constraints:
+
+
+Workers on Sunday:    x2+x3+x4+x5+x6 >= 18;
+
+Workers on Monday:    x3+x4+x5+x6+x7 >= 27;
+
+Workers on Tuesday:   x4+x5+x6+x7+x1 >= 22;
+
+Workers on Wednesday: x5+x6+x7+x1+x2 >= 26;
+
+Workers on Thursday:  x6+x7+x1+x2+x3 >= 25;
+
+Workers on Friday:    x7+x1+x2+x3+x4 >= 21;
+
+Workers on Saturday:  x1+x2+x3+x4+x5 >= 19;
