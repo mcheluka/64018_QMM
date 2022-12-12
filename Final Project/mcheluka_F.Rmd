@@ -1,0 +1,107 @@
+---
+title: "QMM-Final Group Project-3"
+author: "Manasa Chelukala"
+date: '2022-12-09'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Project Group - 03
+
+Manasa Chelukala
+
+Yash Bhanushali
+
+Swetha Kanakavalli
+
+***No Specific Assumptions have been made to be considered,each group should have an equal choice of contribution i.e. no specific groups***
+
+## Factors that define the success of the students
+
+The three factors we have considered to predict the performance of the students are:
+
+1. Course GPA - GPA of the student for a course 
+
+2. Proficiency - Defining how proficient a student in the course.
+
+3. Coursework - How well the student knows about the course.
+
+## Data Collection
+Course administrators should have no problem collecting student GPA's.Other factors can be collected by survey/questionnaire or by showing hands during class.
+
+
+# Each group has three students out of 12 students.
+```{r}
+set.seed(64018)
+Data_Of_the_Student <- data.frame(Course_GPA = rnorm(12, mean=0.80, sd=0.1),
+                       Proficiency = sample(0:1, size=12, replace=TRUE),
+                       Coursework = sample.int(5, size=12, replace=TRUE))
+```
+
+
+```{r}
+# Ensuring max GPA of 1 and rounding to two places
+library(dplyr)
+Data_Of_the_Student <- Data_Of_the_Student %>% mutate(Course_GPA=if_else(Course_GPA > 1, 1, round(Course_GPA, 2)))
+```
+
+
+```{r}
+head(Data_Of_the_Student)
+```
+## Decision Variables
+
+Decision variables are members of groups.A value of $H_[i,j]$ indicates whether a student belongs to the group in which the student is jth.
+
+## Objective Function
+
+It is the objective of this project to maximize the chances of success for each individual group.
+
+Since all the groups will have equal chances of success, we only need to calculate the success rate of one group: $\text{MAX} \hspace{.2cm} Z=q_1 $ letting $q_i$ represent the success rate of the ith group.
+
+Based on the factors above, we can define the chances of success.For all j students in group i,
+
+let $q_i = /Sigma_j / y_j + f_j + 0.2l_j$, 
+
+where,
+$y_j$ is the student's GPA, 
+
+$f_j$ is whether they have similar prior proficiency, and 
+
+$l_j$ is their CourseWork.
+
+As needed, the coefficients can be adjusted.
+
+## Constraints considered for this project
+The constraints we have considered for this model are the following:
+
+* The chances of success should be equal for all groups.
+
+* Each group has exactly three members.
+
+* A member must be in exactly one group at a time.
+```{r}
+library(lpSolveAPI)
+Student_Model <- read.lp("StudentGroupProject.lp")
+solve(Student_Model)
+
+```
+
+```{r}
+get.objective(Student_Model)
+```
+
+```{r}
+get.variables(Student_Model)
+```
+## Decisions from the Group-1,2,3,4
+Below are the decisions for where each student should end up: 
+
+Group 1: Students - 1,8,10
+
+Group 2: Students - 2,3,5
+
+Group 3: Students - 4,7,11  
+
+Group 4: Students - 6,9,12
